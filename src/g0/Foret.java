@@ -4,33 +4,33 @@ import java.util.ArrayList;
 
 public class Foret {
 	
-	private Node genConc(Node n1, Node n2){
+	public static Node genConc(Node n1, Node n2){
 		Node n = new Node(Operation.CONC);
 		n.setLeftNode(n1);
 		n.setRightNode(n2);
 		return n;
 	}
 	
-	private Node genUnion(Node n1, Node n2) {
+	public static Node genUnion(Node n1, Node n2) {
 		Node n = new Node(Operation.UNION);
 		n.setLeftNode(n1);
 		n.setRightNode(n2);
 		return n;
 	}
 	
-	private Node genStar(Node n1){
+	public static Node genStar(Node n1){
 		Node n = new Node(Operation.STAR);
 		n.setStar(n1);
 		return n;
 	}
 	
-	private Node genUn(Node n1) {
+	public static Node genUn(Node n1) {
 		Node n = new Node(Operation.UN);
 		n.setUn(n1);
 		return n;
 	}
 	
-	private Node genAtom(int cod,int act,AtomType atomType) {
+	public static Node genAtom(int cod,int act,AtomType atomType) {
 		Node n = new Node(Operation.ATOM);
 		n.setCod(cod);
 		n.setAct(act);
