@@ -30,7 +30,7 @@ public class Foret {
 		return n;
 	}
 	
-	public static Node genAtom(int cod,int act,AtomType atomType) {
+	public static Node genAtom(String cod,int act,AtomType atomType) {
 		Node n = new Node(Operation.ATOM);
 		n.setCod(cod);
 		n.setAct(act);
@@ -41,23 +41,23 @@ public class Foret {
 	private ArrayList<Node>  genForet() {
 		ArrayList<Node> A = new ArrayList<>();
 		//revoir les symboles
-		/**
-		Node s = genConc(genStar(genConc(genConc(genAtom(N,0,AtomType.NONTERMINAL),genAtom('->',0,AtomType.NONTERMINAL)),genAtom(E,0,AtomType.NONTERMINAL)),genAtom(',',1,AtomType.TERMINAL)),genAtom(';',0,AtomType.TERMINAL));
+		
+		Node s = genConc(genStar(genConc(genConc(genAtom("N",0,AtomType.NONTERMINAL),genAtom("->",0,AtomType.NONTERMINAL)),genAtom("E",0,AtomType.NONTERMINAL)),genAtom(",",1,AtomType.TERMINAL)),genAtom(";",0,AtomType.TERMINAL));
 		A.add(s);
-		Node n = genAtom('IDNTER',2,AtomType.TERMINAL);
+		Node n = genAtom("IDNTER",2,AtomType.TERMINAL);
 		A.add(n);
-		Node e = genConc(genAtom('T',0,AtomType.NONTERMINAL),genStar(genConc(genAtom('+',0,AtomType.TERMINAL),genAtom('T',3,AtomType.NONTERMINAL))));
+		Node e = genConc(genAtom("T",0,AtomType.NONTERMINAL),genStar(genConc(genAtom("+",0,AtomType.TERMINAL),genAtom("T",3,AtomType.NONTERMINAL))));
 		A.add(e);
-		Node t = genConc(genAtom('F',0,AtomType.NONTERMINAL),genStar(genConc(genAtom('.',0,AtomType.TERMINAL),genAtom('F',4,AtomType.NONTERMINAL))));		
+		Node t = genConc(genAtom("F",0,AtomType.NONTERMINAL),genStar(genConc(genAtom(".",0,AtomType.TERMINAL),genAtom("F",4,AtomType.NONTERMINAL))));		
 		A.add(t);
-		Node f = genUnion(genUnion(genUnion(genUnion(genAtom('IDNTER',0,AtomType.TERMINAL),
-				genAtom('ELTER',0,AtomType.NONTERMINAL)),genCon(genCon(genAtom('(',0,AtomType.TERMINAL),
-						genAtom('E',0,AtomType.NONTERMINAL)),genAtom(')',0,AtomType.TERMINAL))),
-				genCon(genCon(genAtom('[',0,AtomType.TERMINAL),genAtom('E',0,AtomType.NONTERMINAL)),
-						genAtom(']',0,AtomType.TERMINAL))),genCon(genCon(genAtom('(/',0,AtomType.TERMINAL),
-								genAtom('E',0,AtomType.NONTERMINAL)),genAtom('/)',0,AtomType.TERMINAL)));
+		Node f = genUnion(genUnion(genUnion(genUnion(genAtom("IDNTER",0,AtomType.TERMINAL),
+				genAtom("ELTER",0,AtomType.NONTERMINAL)),genConc(genConc(genAtom("(",0,AtomType.TERMINAL),
+						genAtom("E",0,AtomType.NONTERMINAL)),genAtom(")",0,AtomType.TERMINAL))),
+				genConc(genConc(genAtom("[",0,AtomType.TERMINAL),genAtom("E",0,AtomType.NONTERMINAL)),
+						genAtom("]",0,AtomType.TERMINAL))),genConc(genConc(genAtom("(/",0,AtomType.TERMINAL),
+								genAtom("E",0,AtomType.NONTERMINAL)),genAtom("/)",0,AtomType.TERMINAL)));
 		A.add(f);
-		*/
+		
 		
 		return A;
 		

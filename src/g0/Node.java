@@ -7,7 +7,7 @@ public class Node {
 	private Node star;
 	private Node un;
 	private int act;
-	private int cod;
+	private String cod;
 	private AtomType atomType;
 	private Operation classe;
 	
@@ -63,11 +63,11 @@ public class Node {
 		this.act = act;
 	}
 
-	public int getCod() {
+	public String getCod() {
 		return cod;
 	}
 
-	public void setCod(int cod) {
+	public void setCod(String cod) {
 		this.cod = cod;
 	}
 
@@ -78,9 +78,5 @@ public class Node {
 	public void setAtomType(AtomType atomType) {
 		this.atomType = atomType;
 	}
-	
-	
-	
-	
 
 }

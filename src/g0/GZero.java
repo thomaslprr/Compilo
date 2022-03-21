@@ -1,7 +1,11 @@
 package g0;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 
 public class GZero {
@@ -10,10 +14,22 @@ public class GZero {
 	
 	private Queue<Node> pile ;
 	
+	static ArrayList<String> symbols = new ArrayList<>();
+	
 	
 	public GZero(ArrayList<Node> A) {
 		this.A = A;
 		this.pile= new ArrayDeque<>();
+		
+		symbols.add("->");
+		symbols.add(".");
+		symbols.add("+");
+		symbols.add("[");
+		symbols.add("]");
+		symbols.add("(|");
+		symbols.add("|)");
+		symbols.add(",");
+		symbols.add(";");
 	}
 	
 	public boolean analyse(Node n) {
@@ -97,7 +113,35 @@ public class GZero {
 		
 	}
 	
-	public void scan() {
+	
+	
+	
+	public void scan(String path) throws IOException {
+		List<String> content = Files.readAllLines(Paths.get(path));
+		String s = "S0->[N0.'->'.E0.','#1].';'," ;
+		
+		String val = "";
+		for(int i = 0 ; i<s.length();i++) {
+			if(!symbols.contains(s.charAt(i))){
+				//on continue d'analyser sauf si on trouve un guillemet
+				val+=s.charAt(i);
+			}else {
+				Node n = new Node(Operation.ATOM);
+				n.setCod(val);
+				n.setAtomType(AtomType.NONTERMINAL);
+				if(i+1<s.length()) {
+					if(s.charAt(i+1) =='#') {
+						try {
+							n.setAct(Integer.parseInt(""+s.charAt(i+2)));
+						}catch(IndexOutOfBoundsException e) {
+							
+						}
+					}
+				}
+			}
+		}
+		  
+		
 		
 	}
 
