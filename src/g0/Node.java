@@ -79,4 +79,12 @@ public class Node {
 		this.atomType = atomType;
 	}
 
+	@Override
+	public String toString() {
+		return "Node [leftNode=" + leftNode + ", rightNode=" + rightNode + ", star=" + star + ", un=" + un + ", act="
+				+ act + ", cod=" + cod + ", atomType=" + atomType + ", classe=" + classe + "]";
+	}
+	
+	
+
 }

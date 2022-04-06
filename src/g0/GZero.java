@@ -16,8 +16,12 @@ public class GZero {
 	
 	static ArrayList<String> symbols = new ArrayList<>();
 	
+	static ArrayList<String> nonTerminal = new ArrayList<>();
 	
-	public GZero(ArrayList<Node> A) {
+	static ArrayList<String> terminal = new ArrayList<>();
+	
+	
+	public GZero(ArrayList<Node> A,ArrayList<String> nT, ArrayList<String> t) {
 		this.A = A;
 		this.pile= new ArrayDeque<>();
 		
@@ -30,8 +34,13 @@ public class GZero {
 		symbols.add("|)");
 		symbols.add(",");
 		symbols.add(";");
+
+		nonTerminal.addAll(nT);
+		
+		terminal.addAll(t);
 	}
 	
+	/**
 	public boolean analyse(Node n) {
 		switch(n.getClasse()) {
 		case CONC:
@@ -111,37 +120,109 @@ public class GZero {
 			break;
 		}
 		
+	}*/
+	
+	public boolean rechercheDico(ArrayList<String> dico,String val) {
+		for(String s : dico) {
+			if(val.equals(s)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	
 	
-	
-	public void scan(String path) throws IOException {
+	public Node scan(String path,int cpt) throws IOException {
 		List<String> content = Files.readAllLines(Paths.get(path));
-		String s = "S0->[N0.'->'.E0.','#1].';'," ;
-		
 		String val = "";
-		for(int i = 0 ; i<s.length();i++) {
-			if(!symbols.contains(s.charAt(i))){
-				//on continue d'analyser sauf si on trouve un guillemet
+		int cptUnit = 0 ;
+		boolean startTerminal = false;
+		
+		for(String s : content) {
+			for(int i = 0 ; i<s.length();i++) {
+				
+				Node n = null;
+				
 				val+=s.charAt(i);
-			}else {
-				Node n = new Node(Operation.ATOM);
-				n.setCod(val);
-				n.setAtomType(AtomType.NONTERMINAL);
-				if(i+1<s.length()) {
-					if(s.charAt(i+1) =='#') {
-						try {
-							n.setAct(Integer.parseInt(""+s.charAt(i+2)));
-						}catch(IndexOutOfBoundsException e) {
-							
+				
+				System.out.println("VALL : "+val);
+				
+				if(s.charAt(i)=='\'') {
+					startTerminal = !startTerminal;
+					val="";
+				}else if(symbols.contains(val) && !startTerminal) {
+					System.out.println("SYMBOLE TROUVEE");
+					val="";
+				}else if(startTerminal && rechercheDico(terminal,val)) {
+					cptUnit++;
+					System.out.println("UNITE LEXICALE TERMINALE TROUVEE : "+val+" | SCAN : "+cptUnit);
+					
+					n = new Node(Operation.ATOM);
+					n.setCod(val);
+					n.setAtomType(AtomType.TERMINAL);
+					if(i+3<=s.length()-1) {
+						if(s.charAt(i+2) =='#') {
+							try {
+								n.setAct(Integer.parseInt(""+s.charAt(i+3)));
+							}catch(IndexOutOfBoundsException e) {
+								
+							}
 						}
 					}
+					
+					val="";
+	
+					
+					
+				}else if(rechercheDico(nonTerminal,val)) {
+					cptUnit++;
+					System.out.println("UNITE LEXICALE NON TERMINALE TROUVEE : "+val+" | SCAN : "+cptUnit);
+					
+					
+					n = new Node(Operation.ATOM);
+					n.setCod(val);
+					n.setAtomType(AtomType.NONTERMINAL);
+					if(i+1<s.length()) {
+						if(s.charAt(i+1) =='#') {
+							try {
+								n.setAct(Integer.parseInt(""+s.charAt(i+2)));
+							}catch(IndexOutOfBoundsException e) {
+								
+							}
+						}
+					}
+					
+					val="";
 				}
+				
+				if(cptUnit==cpt) {
+					return n;
+				}
+				
+					
 			}
-		}
 		  
+		}
 		
+		System.out.println("Pas trouvé");
+		return null;
+		
+	}
+	
+	public static ArrayList<String> fileToArray(String path) throws IOException{
+		ArrayList<String> value = new ArrayList<>();
+		List<String> content = Files.readAllLines(Paths.get(path));
+		for(String s : content) {
+			value.add(s);
+		}
+		return value;
+	}
+	
+	public static void main(String[] args) throws IOException {
+		
+		GZero g = new GZero(new ArrayList<Node>(),fileToArray("src/gpl/dicoNT.txt"),fileToArray("src/gpl/dicoT.txt"));
+		System.out.println(g.scan("src/gpl/g0.txt", 8));
 		
 	}
 
