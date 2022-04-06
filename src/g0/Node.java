@@ -59,8 +59,29 @@ public class Node {
 		return act;
 	}
 
-	public void setAct(int act) {
-		this.act = act;
+	public void setAct(int i,String s) {
+		if(atomType==AtomType.TERMINAL) {
+			if(i+3<=s.length()-1) {
+				if(s.charAt(i+2) =='#') {
+					try {
+						this.act = Integer.parseInt(""+s.charAt(i+3));
+					}catch(IndexOutOfBoundsException e) {
+						System.out.println("ERREUR : le caractère succédant le # n'est pas un chiffre");
+					}
+				}
+			}
+		}else {			
+			if(i+1<s.length()) {
+				if(s.charAt(i+1) =='#') {
+					try {
+						this.act = Integer.parseInt(""+s.charAt(i+2));
+					}catch(IndexOutOfBoundsException e) {
+						System.out.println("ERREUR : le caractère succédant le # n'est pas un chiffre");
+					}
+				}
+			}
+		}
+		
 	}
 
 	public String getCod() {

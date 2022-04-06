@@ -145,9 +145,7 @@ public class GZero {
 				Node n = null;
 				
 				val+=s.charAt(i);
-				
-				System.out.println("VALL : "+val);
-				
+								
 				if(s.charAt(i)=='\'') {
 					startTerminal = !startTerminal;
 					val="";
@@ -157,52 +155,25 @@ public class GZero {
 				}else if(startTerminal && rechercheDico(terminal,val)) {
 					cptUnit++;
 					System.out.println("UNITE LEXICALE TERMINALE TROUVEE : "+val+" | SCAN : "+cptUnit);
-					
 					n = new Node(Operation.ATOM);
 					n.setCod(val);
 					n.setAtomType(AtomType.TERMINAL);
-					if(i+3<=s.length()-1) {
-						if(s.charAt(i+2) =='#') {
-							try {
-								n.setAct(Integer.parseInt(""+s.charAt(i+3)));
-							}catch(IndexOutOfBoundsException e) {
-								
-							}
-						}
-					}
-					
-					val="";
-	
-					
-					
+					n.setAct(i,s);
+					val="";	
 				}else if(rechercheDico(nonTerminal,val)) {
 					cptUnit++;
 					System.out.println("UNITE LEXICALE NON TERMINALE TROUVEE : "+val+" | SCAN : "+cptUnit);
-					
-					
 					n = new Node(Operation.ATOM);
 					n.setCod(val);
 					n.setAtomType(AtomType.NONTERMINAL);
-					if(i+1<s.length()) {
-						if(s.charAt(i+1) =='#') {
-							try {
-								n.setAct(Integer.parseInt(""+s.charAt(i+2)));
-							}catch(IndexOutOfBoundsException e) {
-								
-							}
-						}
-					}
-					
+					n.setAct(i,s);
 					val="";
 				}
 				
 				if(cptUnit==cpt) {
 					return n;
-				}
-				
-					
+				}		
 			}
-		  
 		}
 		
 		System.out.println("Pas trouvé");
@@ -222,7 +193,7 @@ public class GZero {
 	public static void main(String[] args) throws IOException {
 		
 		GZero g = new GZero(new ArrayList<Node>(),fileToArray("src/gpl/dicoNT.txt"),fileToArray("src/gpl/dicoT.txt"));
-		System.out.println(g.scan("src/gpl/g0.txt", 8));
+		System.out.println(g.scan("src/gpl/g0.txt", 14));
 		
 	}
 
