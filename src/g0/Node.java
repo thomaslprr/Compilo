@@ -8,6 +8,7 @@ public class Node {
 	private Node un;
 	private int act;
 	private String cod;
+	private String baseName;
 	private AtomType atomType;
 	private Operation classe;
 	
@@ -58,6 +59,10 @@ public class Node {
 	public int getAct() {
 		return act;
 	}
+	
+	public void setAct(int act) {
+		this.act = act;
+	}
 
 	public void setAct(int i,String s) {
 		if(atomType==AtomType.TERMINAL) {
@@ -99,9 +104,53 @@ public class Node {
 	public void setAtomType(AtomType atomType) {
 		this.atomType = atomType;
 	}
-
-	@Override
+	
 	public String toString() {
+        StringBuilder buffer = new StringBuilder(50);
+        String start = "";
+        if(this.getBaseName()!=null) {
+        	start=this.getBaseName()+"\n"+"| \n";
+        }
+        buffer.append(start);
+        print(buffer, "", "");
+        return buffer.toString();
+    }
+
+    private void print(StringBuilder buffer, String prefix, String childrenPrefix) {
+        buffer.append(prefix);
+        buffer.append(cod);
+        buffer.append('\n');
+           
+            if (this.getLeftNode()!=null) {
+                this.getLeftNode().print(buffer, childrenPrefix + "├── ", childrenPrefix + "│   ");
+            } 
+            
+            if(this.getRightNode()!=null) {
+                this.getRightNode().print(buffer, childrenPrefix + "└── ", childrenPrefix + "    ");
+            }
+            
+            if(this.getStar()!=null) {
+                this.getStar().print(buffer, childrenPrefix + "└── ", childrenPrefix + "    ");
+            }
+            
+            if(this.getUn()!=null) {
+                this.getUn().print(buffer, childrenPrefix + "└── ", childrenPrefix + "    ");
+            }
+        
+    }
+    
+    
+    
+    
+	public String getBaseName() {
+		return baseName;
+	}
+
+	public void setBaseName(String baseName) {
+		this.baseName = baseName;
+	}
+
+	public String infos() {
 		return "Node [leftNode=" + leftNode + ", rightNode=" + rightNode + ", star=" + star + ", un=" + un + ", act="
 				+ act + ", cod=" + cod + ", atomType=" + atomType + ", classe=" + classe + "]";
 	}

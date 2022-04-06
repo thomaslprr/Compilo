@@ -193,7 +193,7 @@ public class GZero {
 	public static void main(String[] args) throws IOException {
 		
 		GZero g = new GZero(new ArrayList<Node>(),fileToArray("src/gpl/dicoNT.txt"),fileToArray("src/gpl/dicoT.txt"));
-		System.out.println(g.scan("src/gpl/g0.txt", 14));
+		System.out.println(g.scan("src/gpl/g0.txt", 14).infos());
 		
 	}
 
