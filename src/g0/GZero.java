@@ -5,14 +5,17 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Queue;
 
 public class GZero {
 	
-	private ArrayList<Node> A ;
+	private LinkedHashMap<String,Node> A ;
 	
 	private Queue<Node> pile ;
+
+	private Node scanned;
 	
 	static ArrayList<String> symbols = new ArrayList<>();
 	
@@ -21,7 +24,7 @@ public class GZero {
 	static ArrayList<String> terminal = new ArrayList<>();
 	
 	
-	public GZero(ArrayList<Node> A,ArrayList<String> nT, ArrayList<String> t) {
+	public GZero(LinkedHashMap<String,Node> A,ArrayList<String> nT, ArrayList<String> t) {
 		this.A = A;
 		this.pile= new ArrayDeque<>();
 		
@@ -40,46 +43,45 @@ public class GZero {
 		terminal.addAll(t);
 	}
 	
-	/**
-	public boolean analyse(Node n) {
+
+	public boolean analyse(Node n, int cpt, String path) throws IOException {
 		switch(n.getClasse()) {
 		case CONC:
-			if(analyse(n.getLeftNode())) {
-				return analyse(n.getRightNode());
+			if(analyse(n.getLeftNode(), cpt, path)) {
+				return analyse(n.getRightNode(), cpt, path);
 			}else {
 				return false;
 			}
 		case UNION:
-			if(analyse(n.getLeftNode())){
+			if(analyse(n.getLeftNode(), cpt, path)){
 				return true;
 			}else {
-				return analyse(n.getRightNode());
+				return analyse(n.getRightNode(), cpt, path);
 			}
 		case STAR:
-			while(analyse(n.getStar())) {
+			while(analyse(n.getStar(), cpt, path)) {
 				
 			}
 			return true;
 		case UN:
-			if(analyse(n.getUn())) {
+			if(analyse(n.getUn(), cpt, path)) {
 				
 			}
 			return true;
 		case ATOM:
 			switch(n.getAtomType()) {
 			case TERMINAL:
-				if(n.getCod()==code) {
+				if(n.getCod()==scanned.getCod()) {
 					if(n.getAct()!=0) {
 						action(n.getAct());
 					}
-					scan();
+					scan(path, cpt);
 					return true;
 				}else {
 					return false;
 				}
-				break;
 			case NONTERMINAL:
-				if(analyse(A.get(n.getCod()))) {
+				if(analyse(A.get(n.getCod()), cpt, path)) {
 					if(n.getAct()!=0) {
 						action(n.getAct());
 					}
@@ -88,6 +90,7 @@ public class GZero {
 				}
 			}
 		}
+		return false;
 	}
 	
 	public void action(int code) {
@@ -96,10 +99,10 @@ public class GZero {
 		case 1 :
 			t1=pile.remove();
 			t2=pile.remove();
-			A.set(t2.getCod()+5,t1);
+			A.put(t2.getCod(),t1);
 			break;
 		case 2 :
-			pile.add(Foret.genAtom(rechercheDico(), action, type));
+			pile.add(Foret.genAtom(scanned.getBaseName(), scanned.getAct(), scanned.getAtomType()));
 			break;
 		case 3 :
 			t1=pile.remove();
@@ -112,15 +115,22 @@ public class GZero {
 			pile.add(Foret.genConc(t2,t1));
 			break;
 		case 5 :
-			
+			if(scanned.getAtomType() == AtomType.NONTERMINAL) {
+				pile.add(Foret.genAtom(scanned.getBaseName(), scanned.getAct(), scanned.getAtomType()));
+			}else {
+				pile.add(Foret.genAtom(scanned.getBaseName(), scanned.getAct(), scanned.getAtomType()));
+			}
 			break;
 		case 6 :
+			t1=pile.remove();
+			pile.add(Foret.genStar(t1));
 			break;
 		case 7 :
+			t1=pile.remove();
+			pile.add(Foret.genUn(t1));
 			break;
 		}
-		
-	}*/
+	}
 	
 	public boolean rechercheDico(ArrayList<String> dico,String val) {
 		for(String s : dico) {
@@ -192,8 +202,8 @@ public class GZero {
 	
 	public static void main(String[] args) throws IOException {
 		
-		GZero g = new GZero(new ArrayList<Node>(),fileToArray("src/gpl/dicoNT.txt"),fileToArray("src/gpl/dicoT.txt"));
-		System.out.println(g.scan("src/gpl/g0.txt", 14).infos());
+		GZero g = new GZero(new LinkedHashMap<String,Node>(),fileToArray("src/gpl/dicoNT.txt"),fileToArray("src/gpl/dicoT.txt"));
+		System.out.println(g.scan("src/gpl/g0.txt", 1).infos());
 		
 	}
 
