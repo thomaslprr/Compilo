@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Queue;
+import java.util.Scanner;
 
 public class GZero {
 	
@@ -16,12 +17,22 @@ public class GZero {
 	private Queue<Node> pile ;
 
 	private Node scanned;
+
+	private ArrayList<Integer> pilex = new ArrayList<>();
+	private ArrayList<Integer> P_code = new ArrayList<>();
+	private int spx;
+	private int co;
+
 	
 	static ArrayList<String> symbols = new ArrayList<>();
 	
 	static ArrayList<String> nonTerminal = new ArrayList<>();
 	
 	static ArrayList<String> terminal = new ArrayList<>();
+
+	static ArrayList<String> dicot = new ArrayList<>();
+	
+	static ArrayList<String> dicont = new ArrayList<>();
 	
 	
 	public GZero(LinkedHashMap<String,Node> A,ArrayList<String> nT, ArrayList<String> t) {
@@ -41,6 +52,9 @@ public class GZero {
 		nonTerminal.addAll(nT);
 		
 		terminal.addAll(t);
+
+		spx = 0;
+		co = 0;
 	}
 	
 
@@ -198,6 +212,127 @@ public class GZero {
 			value.add(s);
 		}
 		return value;
+	}
+
+
+	public boolean analyseP(Node n, int cpt, String path) throws IOException {
+		switch(n.getClasse()) {
+		case CONC:
+			if(analyseP(n.getLeftNode(), cpt, path)) {
+				return analyseP(n.getRightNode(), cpt, path);
+			}else {
+				return false;
+			}
+		case UNION:
+			if(analyseP(n.getLeftNode(), cpt, path)){
+				return true;
+			}else {
+				return analyseP(n.getRightNode(), cpt, path);
+			}
+		case STAR:
+			while(analyseP(n.getStar(), cpt, path)) {
+				
+			}
+			return true;
+		case UN:
+			if(analyseP(n.getUn(), cpt, path)) {
+				
+			}
+			return true;
+		case ATOM:
+			switch(n.getAtomType()) {
+			case TERMINAL:
+				if(n.getCod()==scanned.getCod()) {
+					if(n.getAct()!=0) {
+						actionP(n.getAct());
+					}
+					scanP(path, cpt);
+					return true;
+				}else {
+					return false;
+				}
+			case NONTERMINAL:
+				if(analyseP(A.get(n.getCod()), cpt, path)) {
+					if(n.getAct()!=0) {
+						actionP(n.getAct());
+					}
+				}else {
+					return false;
+				}
+			}
+		}
+		return false;
+	}
+
+	public Node scanP(String path,int cpt) throws IOException {
+		List<String> content = Files.readAllLines(Paths.get(path));
+		String val = "";
+		int cptUnit = 0 ;
+		boolean startTerminal = false;
+		
+		for(String s : content) {
+			for(int i = 0 ; i<s.length();i++) {
+				
+				Node n = null;
+				
+				val+=s.charAt(i);
+								
+				if(s.charAt(i)=='\'') {
+					startTerminal = !startTerminal;
+					val="";
+				}else if(symbols.contains(val) && !startTerminal) {
+					System.out.println("SYMBOLE TROUVEE");
+					val="";
+				}else if(startTerminal && rechercheDico(dicot,val)) {
+					cptUnit++;
+					System.out.println("UNITE LEXICALE TERMINALE TROUVEE : "+val+" | SCAN : "+cptUnit);
+					n = new Node(Operation.ATOM);
+					n.setCod(val);
+					n.setAtomType(AtomType.TERMINAL);
+					n.setAct(i,s);
+					val="";	
+				}else if(rechercheDico(dicont,val)) {
+					cptUnit++;
+					System.out.println("UNITE LEXICALE NON TERMINALE TROUVEE : "+val+" | SCAN : "+cptUnit);
+					n = new Node(Operation.ATOM);
+					n.setCod(val);
+					n.setAtomType(AtomType.NONTERMINAL);
+					n.setAct(i,s);
+					val="";
+				}
+				
+				if(cptUnit==cpt) {
+					return n;
+				}		
+			}
+		}
+		
+		System.out.println("Pas trouvé");
+		return null;
+	}
+
+	public void interpret(String x) {
+		switch (x) {
+		case "LDA":
+			spx++;
+			pilex.set(spx, P_code.get(co + 1));
+			co += 2;
+		break;
+		case "LDV":
+			spx++;
+			pilex.set(spx, pilex.get(P_code.get(co + 1)));
+			co += 2;
+		break;
+		case "RD":
+			spx++;
+			Scanner scan = new Scanner(System.in);
+			pilex.set(spx, scan.nextInt());
+			break;
+		case "NOT":
+			pilex.set(spx, !pilex.get(spx));
+			co++;
+		break;
+		}
 	}
 	
 	public static void main(String[] args) throws IOException {
