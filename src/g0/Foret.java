@@ -45,7 +45,7 @@ public class Foret {
 		ArrayList<Node> A = new ArrayList<>();
 		//revoir les symboles
 		
-		Node s = genConc(genStar(genConc(genConc(genConc(genAtom("N",0,AtomType.NONTERMINAL),genAtom("->",0,AtomType.TERMINAL)),genAtom("E",0,AtomType.NONTERMINAL)),genAtom(",",0,AtomType.TERMINAL))),genAtom(";",0,AtomType.TERMINAL));
+		Node s = genConc(genStar(genConc(genConc(genConc(genAtom("N",0,AtomType.NONTERMINAL),genAtom("->",0,AtomType.TERMINAL)),genAtom("E",0,AtomType.NONTERMINAL)),genAtom(",",1,AtomType.TERMINAL))),genAtom(";",0,AtomType.TERMINAL));
 		s.setBaseName("s");
 		A.add(s);
 		Node n = genAtom("IDNTER",2,AtomType.TERMINAL);
@@ -57,12 +57,12 @@ public class Foret {
 		Node t = genConc(genAtom("F",0,AtomType.NONTERMINAL),genStar(genConc(genAtom(".",0,AtomType.TERMINAL),genAtom("F",4,AtomType.NONTERMINAL))));		
 		t.setBaseName("t");
 		A.add(t);
-		Node f = genUnion(genUnion(genUnion(genUnion(genAtom("IDNTER",0,AtomType.TERMINAL),
-				genAtom("ELTER",0,AtomType.NONTERMINAL)),genConc(genConc(genAtom("(",0,AtomType.TERMINAL),
+		Node f = genUnion(genUnion(genUnion(genUnion(genAtom("IDNTER",5,AtomType.TERMINAL),
+				genAtom("ELTER",5,AtomType.NONTERMINAL)),genConc(genConc(genAtom("(",0,AtomType.TERMINAL),
 						genAtom("E",0,AtomType.NONTERMINAL)),genAtom(")",0,AtomType.TERMINAL))),
 				genConc(genConc(genAtom("[",0,AtomType.TERMINAL),genAtom("E",0,AtomType.NONTERMINAL)),
-						genAtom("]",0,AtomType.TERMINAL))),genConc(genConc(genAtom("(/",0,AtomType.TERMINAL),
-								genAtom("E",0,AtomType.NONTERMINAL)),genAtom("/)",0,AtomType.TERMINAL)));
+						genAtom("]",6,AtomType.TERMINAL))),genConc(genConc(genAtom("(/",0,AtomType.TERMINAL),
+								genAtom("E",0,AtomType.NONTERMINAL)),genAtom("/)",7,AtomType.TERMINAL)));
 		f.setBaseName("f");
 		A.add(f);
 		
